@@ -1,13 +1,13 @@
-package Azul.example.Azum;
+package Azul.example.Azul;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AzumApplication {
+public class AzulApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AzumApplication.class, args);
+		SpringApplication.run(AzulApplication.class, args);
 	}
 
 }
