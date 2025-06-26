@@ -2,6 +2,8 @@ package Azul.example.Azul.model;
 
 import jakarta.persistence.*;
 
+import javax.management.relation.Role;
+
 @Entity
 @Table(name = "utilisateurs")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -11,22 +13,35 @@ public abstract class Utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String nom;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String motDePasse;
+    @Column(name = "password", nullable = false)
+    private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, insertable=false, updatable=false)
+    private Role role;
     public Utilisateur() {}
 
-    public Utilisateur(String nom, String email, String motDePasse) {
-        this.nom = nom;
-        this.email = email;
-        this.motDePasse = motDePasse;
+    public Utilisateur(Long id, String fullName, String email, String password, Role role, Long id1, String fullName1, String email1, String password1, Role role1) {
 
+        this.id = id1;
+        this.fullName = fullName1;
+        this.email = email1;
+        this.password = password1;
+        this.role = role1;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Long getId() {
@@ -37,14 +52,6 @@ public abstract class Utilisateur {
         this.id = id;
     }
 
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -53,13 +60,19 @@ public abstract class Utilisateur {
         this.email = email;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
+    public String getPassword() {
+        return password;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
+    public Role getRole() {
+        return role;
+    }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
