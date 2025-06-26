@@ -33,8 +33,5 @@ public class Photo {
     public Atelier getAtelier() { return atelier; }
     public void setAtelier(Atelier atelier) { this.atelier = atelier; }
 
-    // Méthodes métier
-    public void associer() {
-        // Logique d'association avec atelier
-    }
+
 }

@@ -39,7 +39,6 @@ public class MenuCafe {
 
     public Atelier getAtelier() { return atelier; }
     public void setAtelier(Atelier atelier) { this.atelier = atelier; }
-
     // Méthodes métier
     public void consulterMenu() {
         // Logique de consultation du menu

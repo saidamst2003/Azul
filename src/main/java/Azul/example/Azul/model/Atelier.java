@@ -84,13 +84,5 @@ public class Atelier {
     public MenuCafe getMenuCafe() { return menuCafe; }
     public void setMenuCafe(MenuCafe menuCafe) { this.menuCafe = menuCafe; }
 
-    // Méthodes métier
-    public void consulterDetails() {
-        // Logique de consultation des détails
-    }
-
-    public void modifierInfo() {
-        // Logique de modification des informations
-    }
 }
 

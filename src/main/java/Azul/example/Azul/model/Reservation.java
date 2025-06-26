@@ -42,12 +42,5 @@ public class Reservation {
     public Atelier getAtelier() { return atelier; }
     public void setAtelier(Atelier atelier) { this.atelier = atelier; }
 
-    // Méthodes métier
-    public void concerneAtelier() {
-        // Logique de relation avec atelier
-    }
 
-    public void effectueReservation() {
-        // Logique d'effectuation de réservation
-    }
 }

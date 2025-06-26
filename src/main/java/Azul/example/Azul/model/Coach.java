@@ -35,20 +35,5 @@ public class Coach {
     public List<Atelier> getAteliers() { return ateliers; }
     public void setAteliers(List<Atelier> ateliers) { this.ateliers = ateliers; }
 
-    // Méthodes métier
-    public void animer() {
-        // Logique d'animation
-    }
 
-    public void ajouterCoach() {
-        // Logique d'ajout de coach
-    }
-
-    public void modifierCoach() {
-        // Logique de modification
-    }
-
-    public void supprimerCoach() {
-        // Logique de suppression
-    }
 }
