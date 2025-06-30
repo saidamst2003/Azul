@@ -7,10 +7,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "coaches")
-public class Coach {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@DiscriminatorValue("COACH")
+public class Coach extends Utilisateur {
 
     @Column(nullable = false)
     private String specialite;
@@ -19,16 +17,16 @@ public class Coach {
     private List<Atelier> ateliers = new ArrayList<>();
 
     // Constructeurs
-    public Coach() {}
+    public Coach() {
+        super();
+    }
 
-    public Coach(String specialite) {
+    public Coach(String fullName, String email, String password, String specialite) {
+        super(fullName, email, password, role.COACH);
         this.specialite = specialite;
     }
 
     // Getters et Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getSpecialite() { return specialite; }
     public void setSpecialite(String specialite) { this.specialite = specialite; }
 

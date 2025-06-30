@@ -2,8 +2,6 @@ package Azul.example.Azul.model;
 
 import jakarta.persistence.*;
 
-import javax.management.relation.Role;
-
 @Entity
 @Table(name = "utilisateurs")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -23,17 +21,15 @@ public abstract class Utilisateur {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, insertable=false, updatable=false)
-    private Role role;
+    @Column(name = "role", nullable = false)
+    private role role;
     public Utilisateur() {}
 
-    public Utilisateur(Long id, String fullName, String email, String password, Role role, Long id1, String fullName1, String email1, String password1, Role role1) {
-
-        this.id = id1;
-        this.fullName = fullName1;
-        this.email = email1;
-        this.password = password1;
-        this.role = role1;
+    public Utilisateur(String fullName, String email, String password, role role) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
     public String getFullName() {
@@ -68,11 +64,11 @@ public abstract class Utilisateur {
         this.password = password;
     }
 
-    public Role getRole() {
+    public role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(role role) {
         this.role = role;
     }
 }

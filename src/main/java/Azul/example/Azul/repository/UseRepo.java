@@ -1,11 +1,13 @@
 package Azul.example.Azul.repository;
 
 
-import org.apache.catalina.User;
+import Azul.example.Azul.model.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface UseRepo extends JpaRepository<User, Long> {
-    User findUserByEmail(String email);
+public interface UseRepo extends JpaRepository<Utilisateur, Long> {
+    Optional<Utilisateur> findByEmail(String email);
 }

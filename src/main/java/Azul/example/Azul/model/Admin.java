@@ -14,10 +14,12 @@ public class Admin extends Utilisateur {
     private List<Atelier> ateliers = new ArrayList<>();
 
     // Constructeurs
-    public Admin() {}
+    public Admin() {
+        super();
+    }
 
     public Admin(String nom, String email, String motDePasse) {
-        super(nom, email, motDePasse);
+        super(nom, email, motDePasse, role.ADMIN);
     }
 
     // Getters et Setters

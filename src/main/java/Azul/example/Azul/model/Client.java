@@ -12,10 +12,12 @@ public class Client extends Utilisateur {
 //    private List<Reservation> reservations = new ArrayList<>();
 
     // Constructeurs
-    public Client() {}
+    public Client() {
+        super();
+    }
 
     public Client(String nom, String email, String motDePasse) {
-        super(nom, email, motDePasse);
+        super(nom, email, motDePasse, role.CLIENT);
     }
 //
 //    // Getters et Setters
@@ -23,6 +25,7 @@ public class Client extends Utilisateur {
 //    public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
 
     // Implémentation des méthodes
+    /*
     @Override
     public void seConnecter() {
         // Logique de connexion pour client
@@ -39,4 +42,5 @@ public class Client extends Utilisateur {
     public void modifierProfil() {
         // Logique de modification de profil
     }
+    */
 }
