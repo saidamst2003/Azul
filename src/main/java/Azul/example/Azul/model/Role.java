@@ -1,6 +1,6 @@
 package Azul.example.Azul.model;
 
-public enum role    {
+public enum Role {
     CLIENT,
     ADMIN,
     COACH;

@@ -1,5 +1,7 @@
 package Azul.example.Azul.model;
 
+import Azul.example.Azul.model.Atelier;
+import Azul.example.Azul.model.Utilisateur;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class Coach extends Utilisateur {
         super();
     }
 
-    public Coach(String fullName, String email, String password, String specialite) {
+    public Coach(String fullName, String email, String password, String specialite, Role role) {
         super(fullName, email, password, role.COACH);
         this.specialite = specialite;
     }

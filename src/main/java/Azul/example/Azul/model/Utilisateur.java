@@ -22,10 +22,10 @@ public abstract class Utilisateur {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private role role;
+    private Role role;
     public Utilisateur() {}
 
-    public Utilisateur(String fullName, String email, String password, role role) {
+    public Utilisateur(String fullName, String email, String password, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
@@ -64,11 +64,11 @@ public abstract class Utilisateur {
         this.password = password;
     }
 
-    public role getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(role role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
