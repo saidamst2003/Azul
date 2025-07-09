@@ -1,5 +1,7 @@
 package Azul.example.Azul.service;
 
+import Azul.example.Azul.model.Utilisateur;
+import Azul.example.Azul.repository.UserRepository;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,15 +16,15 @@ public class CustemUserService implements UserDetailsService {
 
 
 
-    private final UserReposetory userReposetory;
+    private final UserRepository userReposetory;
 
-    public CustemUserService(UserReposetory userReposetory) {
+    public CustemUserService(UserRepository userReposetory) {
         this.userReposetory = userReposetory;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userReposetory.findByUsername(username);
+        Utilisateur user = userReposetory.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
