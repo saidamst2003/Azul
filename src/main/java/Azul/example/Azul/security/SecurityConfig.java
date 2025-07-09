@@ -1,4 +1,4 @@
-package Azul.example.Azul;
+package Azul.example.Azul.security;
 
 import Azul.example.Azul.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
