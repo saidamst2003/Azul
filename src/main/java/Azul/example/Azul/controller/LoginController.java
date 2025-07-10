@@ -1,5 +1,6 @@
-package Azul.example.Azul;
+package Azul.example.Azul.controller;
 
+import Azul.example.Azul.dto.LoginDTO;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.service.UserService;
 import jakarta.validation.Valid;
