@@ -1,6 +1,7 @@
 package Azul.example.Azul.dto;
 
 
+import Azul.example.Azul.validation.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

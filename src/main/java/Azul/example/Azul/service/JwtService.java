@@ -1,6 +1,6 @@
-package Azul.example.Azul.security;
+package Azul.example.Azul.service;
 
-import Azul.example.Azul.dto.UtilisateurDTO;
+import Azul.example.Azul.dto.AuthUserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -56,19 +56,19 @@ public class JwtService {
         return extractClaims(token, Claims::getExpiration);
     }
 
-    public String generateJwtToken(UtilisateurDTO utilisateurDTO) {
+    public String generateJwtToken(AuthUserDTO authUserDTO) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", utilisateurDTO.id());
-        claims.put("firstName", utilisateurDTO.fullName());
-        claims.put("email", utilisateurDTO.email());
-        claims.put("role", utilisateurDTO.role());
+        claims.put("id", authUserDTO.id());
+        claims.put("firstName", authUserDTO.fullName());
+        claims.put("email", authUserDTO.email());
+        claims.put("role", authUserDTO.role());
 
         long expirationTimeMillis = System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24 hours
 
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(utilisateurDTO.email())
+                .subject(authUserDTO.email())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(expirationTimeMillis))
                 .and()

@@ -5,7 +5,6 @@ import Azul.example.Azul.dto.AuthUserDTO;
 import Azul.example.Azul.dto.RegisterDTO;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.UserRepository;
-import Azul.example.Azul.security.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
