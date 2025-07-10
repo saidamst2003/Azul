@@ -1,75 +1,96 @@
 package Azul.example.Azul.service;
 
-
+import Azul.example.Azul.dto.RegisterDTO;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import Azul.example.Azul.dto.RegisterDTO;
-import Azul.example.Azul.dto.UtilisateurDTO;
 import Azul.example.Azul.security.JwtService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper;
     private final JwtService jwtService;
+    private final BCryptPasswordEncoder encoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository, JwtService jwtService) {
+    public UserService(
+            final UserRepository userRepository,
+            final AuthenticationManager authenticationManager,
+            final UserMapper userMapper,
+            final JwtService jwtService
+    ) {
         this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.userMapper = userMapper;
         this.jwtService = jwtService;
-    }
-    public Utilisateur saveUser(Utilisateur utilisateur) {
-        return userRepository.save(utilisateur);
-    }
-    public Page<Utilisateur> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
+        this.encoder = new BCryptPasswordEncoder(12);
     }
 
-    public Page<Utilisateur> getUsersByRole(String role, Pageable pageable) {
-        return userRepository.findByRolesName(role, pageable);
-    }
-
-    public Optional<Utilisateur> getUserByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
-    }
-
-    public Optional<Utilisateur> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    // Ajout de la méthode d'inscription
-    public UtilisateurDTO register(RegisterDTO registerDTO) {
-        // Vérifier si l'utilisateur existe déjà
-        if (userRepository.findByEmail(registerDTO.email()).isPresent()) {
-            throw new RuntimeException("Email déjà utilisé");
+    public Utilisateur registerUser(RegisterDTO registerDTO) {
+        if (userRepository.findUserByEmail(registerDTO.email()) != null) {
+            throw new IllegalArgumentException("User with this email already exists.");
         }
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setFullName(registerDTO.fullName());
-        utilisateur.setEmail(registerDTO.email());
-        utilisateur.setPassword(registerDTO.password()); // À hasher en prod !
-        utilisateur.setRole(registerDTO.role());
-        userRepository.save(utilisateur);
-        return new UtilisateurDTO(utilisateur.getId(), utilisateur.getFullName(), utilisateur.getEmail(), utilisateur.getRole());
+
+        Utilisateur newUser = new Utilisateur() {
+        };
+        String encryptedPassword = encoder.encode(registerDTO.password());
+
+        newUser.setFullName(registerDTO.fullName());
+        newUser.setEmail(registerDTO.email());
+        newUser.setPassword(encryptedPassword);
+        //newUser.setRole(registerDTO.role());
+
+        return userRepository.save(newUser);
     }
 
-    // Ajout de la méthode de connexion
-    public String login(String email, String password) {
-        Utilisateur utilisateur = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        if (!utilisateur.getPassword().equals(password)) { // À hasher en prod !
-            throw new RuntimeException("Mot de passe incorrect");
+    public ResponseEntity<?> verify(Utilisateur user) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getEmail(),
+                            user.getPassword()
+                    )
+            );
+
+            if (authentication.isAuthenticated()) {
+                AuthUserDTO authUser = this.getAuthenticatedUser(user.getEmail());
+                String token = jwtService.generateJwtToken(authUser);
+
+                Map<String, String> responseSuccess = new HashMap<>();
+                responseSuccess.put("token", token);
+
+                return new ResponseEntity<>(responseSuccess, HttpStatus.OK);
+            }
+            throw new PasswordIncorrectException("Invalid credentials (Authentication failed unexpectedly).");
+        } catch (AuthenticationException e) {
+            System.err.println("Authentication failed for user: " + user.getEmail() + " Error: " + e.getMessage());
+            throw new PasswordIncorrectException("Invalid credentials.");
         }
-        UtilisateurDTO utilisateurDTO = new UtilisateurDTO(utilisateur.getId(), utilisateur.getFullName(), utilisateur.getEmail(), utilisateur.getRole());
-        return jwtService.generateJwtToken(utilisateurDTO);
+    }
+
+    public AuthUserDTO getAuthenticatedUser(String email) {
+        User authenticatedUser = userRepository.findUserByEmail(email);
+        if (authenticatedUser == null) {
+            throw new PasswordIncorrectException("User not found after authentication (this should not happen).");
+        }
+        return new AuthUserDTO(
+                authenticatedUser.getId(),
+                authenticatedUser.getFullName(),
+                authenticatedUser.getEmail(),
+                authenticatedUser.getRole()
+        );
     }
 }
