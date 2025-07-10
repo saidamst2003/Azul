@@ -1,11 +1,11 @@
 package Azul.example.Azul.dto;
 
-import javax.management.relation.Role;
+import Azul.example.Azul.model.role;
 
 public record AuthUserDTO (
         Long id,
         String fullName,
         String email,
-        Role role
+        role role
 ) {
 }

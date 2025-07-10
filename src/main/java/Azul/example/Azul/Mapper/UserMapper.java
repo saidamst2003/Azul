@@ -2,17 +2,26 @@ package Azul.example.Azul.Mapper;
 
 import Azul.example.Azul.dto.AuthUserDTO;
 import Azul.example.Azul.model.Utilisateur;
+import Azul.example.Azul.model.Admin;
+import Azul.example.Azul.model.Client;
 import org.mapstruct.Mapper;
 
-import javax.management.relation.Role;
-
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public abstract class UserMapper {
 
-    Utilisateur toEntity(AuthUserDTO authUserDTO);
-    AuthUserDTO toDTO(Utilisateur user);
-
-    default Role map(Role role) {
-        return role;
+    public Utilisateur toEntity(AuthUserDTO authUserDTO) {
+        if (authUserDTO == null || authUserDTO.role() == null) {
+            return null;
+        }
+        String roleName = authUserDTO.role().name();
+        if (roleName.equalsIgnoreCase("ADMIN")) {
+            return new Admin(authUserDTO.fullName(), authUserDTO.email(), null);
+        } else if (roleName.equalsIgnoreCase("CLIENT")) {
+            return new Client(authUserDTO.fullName(), authUserDTO.email(), null);
+        }
+        // Add more roles as needed
+        return null;
     }
+
+    public abstract AuthUserDTO toDTO(Utilisateur user);
 }

@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import Azul.example.Azul.model.Admin;
+import Azul.example.Azul.model.Client;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -42,18 +45,21 @@ public class UserService {
     }
 
     public Utilisateur registerUser(RegisterDTO registerDTO) {
-        if (userRepository.findUserByEmail(registerDTO.email()) != null) {
+        Optional<Utilisateur> existingUser = userRepository.findUserByEmail(registerDTO.email());
+        if (existingUser.isPresent()) {
             throw new IllegalArgumentException("User with this email already exists.");
         }
 
-        Utilisateur newUser = new Utilisateur() {
-        };
-        String encryptedPassword = encoder.encode(registerDTO.password());
+        Utilisateur newUser;
+        String role = registerDTO.role(); // Adjust if your DTO uses a different method/field
 
-        newUser.setFullName(registerDTO.fullName());
-        newUser.setEmail(registerDTO.email());
-        newUser.setPassword(encryptedPassword);
-        //newUser.setRole(registerDTO.role());
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            newUser = new Admin(registerDTO.fullName(), registerDTO.email(), encoder.encode(registerDTO.password()));
+        } else if ("CLIENT".equalsIgnoreCase(role)) {
+            newUser = new Client(registerDTO.fullName(), registerDTO.email(), encoder.encode(registerDTO.password()));
+        } else {
+            throw new IllegalArgumentException("Unknown role: " + role);
+        }
 
         return userRepository.save(newUser);
     }
@@ -84,15 +90,16 @@ public class UserService {
     }
 
     public AuthUserDTO getAuthenticatedUser(String email) {
-        Utilisateur authenticatedUser = userRepository.findUserByEmail(email);
-        if (authenticatedUser == null) {
+        Optional<Utilisateur> authenticatedUser = userRepository.findUserByEmail(email);
+        if (authenticatedUser.isEmpty()) {
             throw new PasswordIncorrectException("User not found after authentication (this should not happen).");
         }
+        Utilisateur user = authenticatedUser.get();
         return new AuthUserDTO(
-                authenticatedUser.getId(),
-                authenticatedUser.getFullName(),
-                authenticatedUser.getEmail(),
-                authenticatedUser.getRole()
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole()
         );
     }
 }
