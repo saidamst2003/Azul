@@ -11,7 +11,7 @@ public record RegisterDTO(
 
         @NotBlank(message = "email is required")
         @Email(message = "please enter a valid email")
-//        @UniqueEmail
+        @UniqueEmail
         String email,
 
         @NotBlank(message = "password is required")
