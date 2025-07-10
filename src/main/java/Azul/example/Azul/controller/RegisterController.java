@@ -1,6 +1,8 @@
 package Azul.example.Azul.controller;
 
 import Azul.example.Azul.dto.RegisterDTO;
+import Azul.example.Azul.model.Utilisateur;
+import Azul.example.Azul.service.Authservice;
 import jakarta.validation.Valid;
 import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ public class RegisterController {
 
     @PostMapping("/{role}")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterDTO registerDTO, @PathVariable String role) {
-        User registeredUser = authService.registerUser(registerDTO, role);
+        Utilisateur registeredUser = authService.registerUser(registerDTO, role);
         return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 }
