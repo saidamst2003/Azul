@@ -1,9 +1,12 @@
 package Azul.example.Azul.service;
 
+import Azul.example.Azul.Mapper.UserMapper;
+import Azul.example.Azul.dto.AuthUserDTO;
 import Azul.example.Azul.dto.RegisterDTO;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.UserRepository;
 import Azul.example.Azul.security.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -82,7 +85,7 @@ public class UserService {
     }
 
     public AuthUserDTO getAuthenticatedUser(String email) {
-        User authenticatedUser = userRepository.findUserByEmail(email);
+        Utilisateur authenticatedUser = userRepository.findUserByEmail(email);
         if (authenticatedUser == null) {
             throw new PasswordIncorrectException("User not found after authentication (this should not happen).");
         }
