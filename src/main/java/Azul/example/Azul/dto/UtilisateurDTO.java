@@ -7,5 +7,5 @@ public record UtilisateurDTO(
         Long id,
         String fullName,
         String email,
-        Role role
+        String role
 ) {}

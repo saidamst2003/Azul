@@ -1,4 +1,4 @@
-package Azul.example.Azul.service;
+package Azul.example.Azul.security;
 
 import Azul.example.Azul.dto.UtilisateurDTO;
 import io.jsonwebtoken.Claims;

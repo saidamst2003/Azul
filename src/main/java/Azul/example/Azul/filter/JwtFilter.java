@@ -1,6 +1,7 @@
 package Azul.example.Azul.filter;
 
 
+import Azul.example.Azul.service.CustemUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private jwtUtils jwtUtils;
+    private JwtFilter jwtUtils;
 
     @Autowired
     private CustemUserService custemUserService;

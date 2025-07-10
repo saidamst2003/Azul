@@ -1,6 +1,7 @@
 package Azul.example.Azul.security;
 
 import Azul.example.Azul.filter.JwtFilter;
+import Azul.example.Azul.service.CustemUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
