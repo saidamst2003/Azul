@@ -3,13 +3,13 @@ package Azul.example.Azul.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.util.Base64;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,42 +23,23 @@ public class jwtUtils {
 
     @Value("${app.expiration-time}")
     private Long expirationTime;
-    public String encodeToBase64(byte[] data) {
-        return Base64.getEncoder().encodeToString(data);
-    }
 
-    public byte[] decodeFromBase64(String base64String) {
-        return Base64.getDecoder().decode(base64String);
-    }
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        String token = createToken(claims, username);
-
-        System.out.println("Generated token for [" + username + "]: " + token);
-
-        return token;
+        return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
         Date now = new Date();
-        Date expiration = new Date(System.currentTimeMillis() + expirationTime);
-
-        System.out.println("Issued At: " + now);
-        System.out.println("Expiration At: " + expiration);
+        Date expiration = new Date(now.getTime() + expirationTime);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS256, getSignKey())
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    private Key getSignKey() {
-        System.out.println(" SecretKey being used: " + secretKey);
-        byte[] keyBytes = secretKey.getBytes();
-        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
@@ -66,29 +47,34 @@ public class jwtUtils {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpirationDate(token).before(new Date());
-    }
-
-    private Date extractExpirationDate(String token) {
-        return extiratClaim(token, Claims::getExpiration);
-    }
-
     public String extractUsername(String token) {
-        return extiratClaim(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject);
     }
 
-    private <T> T extiratClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extiratAllClaims(token);
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extiratAllClaims(String token) {
-        return Jwts.parser()
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
+    private SecretKey getSignKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 }

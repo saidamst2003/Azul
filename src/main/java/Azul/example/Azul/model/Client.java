@@ -1,42 +1,34 @@
 package Azul.example.Azul.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
 @DiscriminatorValue("CLIENT")
 public class Client extends Utilisateur {
-//
-//    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Reservation> reservations = new ArrayList<>();
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reservation> reservations = new ArrayList<>();
 
-    // Constructeurs
     public Client() {}
 
-    public Client(String nom, String email, String motDePasse) {
-        super(nom, email, motDePasse);
+    public Client(String fullName, String email, String password, Role role) {
+        super(null, fullName, email, password, role);
     }
-//
-//    // Getters et Setters
-//    public List<Reservation> getReservations() { return reservations; }
-//    public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
 
-    // Implémentation des méthodes
+    public Client(@NotBlank(message = "full name is required") String s, @NotBlank(message = "email is required") @Email(message = "please enter a valid email") String email, String encode) {
+    }
+
+    public List<Reservation> getReservations() { return reservations; }
+    public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
+
     @Override
     public void seConnecter() {
         // Logique de connexion pour client
     }
 
-    public void reserverAtelier() {
-        // Logique de réservation
-    }
-
-    public void consulterHistorique() {
-        // Logique pour consulter l'historique
-    }
-
-    public void modifierProfil() {
-        // Logique de modification de profil
-    }
 }

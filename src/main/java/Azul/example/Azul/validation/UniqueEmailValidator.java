@@ -4,9 +4,6 @@ import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.apache.catalina.User;
-
-import java.util.Optional;
 
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
@@ -22,7 +19,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-        Optional<User> foundEmail = userRepository.findUserByEmail(email);
+        Utilisateur foundEmail = userRepository.findUserByEmail(email);
 
         return foundEmail == null;
     }

@@ -22,13 +22,17 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<?> loginUser (@Valid @RequestBody LoginDTO loginDTO) {
-        Utilisateur user = new Utilisateur() {
+        Utilisateur utilisateur = new Utilisateur() {
+            @Override
+            public void seConnecter() {
+
+            }
         };
 
-        user.setEmail(loginDTO.email());
-        user.setPassword(loginDTO.password());
+        utilisateur.setEmail(loginDTO.email());
+        utilisateur.setPassword(loginDTO.password());
 
-        return userService.verify(user);
+        return userService.verify(utilisateur);
 
     }
 }

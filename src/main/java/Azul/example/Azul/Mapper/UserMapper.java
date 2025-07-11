@@ -1,27 +1,31 @@
 package Azul.example.Azul.Mapper;
 
 import Azul.example.Azul.dto.AuthUserDTO;
+import Azul.example.Azul.model.Role;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.model.Admin;
 import Azul.example.Azul.model.Client;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public abstract class UserMapper {
+public interface UserMapper {
 
-    public Utilisateur toEntity(AuthUserDTO authUserDTO) {
-        if (authUserDTO == null || authUserDTO.role() == null) {
-            return null;
+    default Utilisateur toEntity(AuthUserDTO authUserDTO) {
+        if (authUserDTO.role() == Role.ADMIN) {
+            Admin admin = new Admin();
+            admin.setFullName(authUserDTO.fullName());
+            admin.setEmail(authUserDTO.email());
+            admin.setRole(authUserDTO.role());
+            return admin;
+        } else if (authUserDTO.role() == Role.CLIENT) {
+            Client client = new Client();
+            client.setFullName(authUserDTO.fullName());
+            client.setEmail(authUserDTO.email());
+            client.setRole(authUserDTO.role());
+            return client;
         }
-        String roleName = authUserDTO.role().name();
-        if (roleName.equalsIgnoreCase("ADMIN")) {
-            return new Admin(authUserDTO.fullName(), authUserDTO.email(), null);
-        } else if (roleName.equalsIgnoreCase("CLIENT")) {
-            return new Client(authUserDTO.fullName(), authUserDTO.email(), null);
-        }
-        // Add more roles as needed
-        return null;
+        throw new IllegalArgumentException("Role non supporté: " + authUserDTO.role());
     }
 
-    public abstract AuthUserDTO toDTO(Utilisateur user);
+    AuthUserDTO toDTO(Utilisateur user);
 }

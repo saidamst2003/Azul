@@ -1,7 +1,7 @@
 package Azul.example.Azul.service;
 
 import Azul.example.Azul.dto.RegisterDTO;
-import Azul.example.Azul.model.Utilisateur;
+import Azul.example.Azul.model.*;
 import Azul.example.Azul.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,14 @@ public class Authservice {
         Utilisateur newUser;
 
         if(role.equalsIgnoreCase("admin")) {
-            newUser = new Administrateur();
+            newUser = new Admin();
             newUser.setRole(Role.ADMIN);
         } else if (role.equalsIgnoreCase("conducteur")) {
-            newUser = new Conducteur();
-            newUser.setRole(Role.CONDUCTEUR);
+            newUser = new Client();
+            newUser.setRole(Role.CLIENT);
         } else {
-            newUser = new Expediteur();
-            newUser.setRole(Role.EXPEDITEUR);
+            newUser = new Coach();
+            newUser.setRole(Role.COACH);
         }
 
         newUser.setFullName(registerDTO.fullName());

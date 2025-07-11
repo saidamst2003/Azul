@@ -1,7 +1,7 @@
 package Azul.example.Azul.security;
 
 import Azul.example.Azul.filter.JwtFilter;
-import Azul.example.Azul.service.CustemUserService;
+import Azul.example.Azul.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,10 +27,10 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final CustemUserService custemUserService;
+    private final CustomUserDetailsService  custemUserService;
     private final JwtFilter jwtFilter;
 
-    public SecurityConfig(CustemUserService custemUserService, JwtFilter jwtFilter) {
+    public SecurityConfig(CustomUserDetailsService custemUserService, JwtFilter jwtFilter) {
         this.custemUserService = custemUserService;
         this.jwtFilter = jwtFilter;
     }
@@ -68,32 +68,22 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - These should be accessible without authentication
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/auth/roles").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
+                        // Public endpoints - accessible without authentication
+                        .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/roles").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // All other auth endpoints should be public for now
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        // Events endpoints - Updated for ADMIN and CLIENT roles
-                        .requestMatchers(HttpMethod.GET, "/api/events/**").hasAnyRole("ADMIN", "CLIENT")
-                        .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/events/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole("ADMIN")
-
-                        // User management - Only ADMIN
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
-
-                        // Profile and reservations - Both roles
+                        // Profile and reservations - accessible to ADMIN and CLIENT
                         .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT")
                         .requestMatchers("/api/reservations/**").hasAnyRole("ADMIN", "CLIENT")
 
                         // Any other request requires authentication
                         .anyRequest().authenticated()
                 )
+                // Add JWT filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 }

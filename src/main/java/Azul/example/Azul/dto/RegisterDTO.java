@@ -5,7 +5,7 @@ import Azul.example.Azul.validation.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import Azul.example.Azul.model.role;
+import Azul.example.Azul.model.Role;
 
 public record RegisterDTO(
         @NotBlank(message = "full name is required")
@@ -20,7 +20,5 @@ public record RegisterDTO(
         @Size(min = 6, message = "password must be at least 6 characters long")
         String password,
 
-        @NotBlank(message = "role is required")
-        role role
-) {
-}
+        Role role
+) {}

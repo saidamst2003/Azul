@@ -7,7 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import org.mapstruct.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +19,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;
-    private final JwtService jwtService;
+    UserDetailsService userDetailsService;
+    JwtService jwtService;
 
+    @Autowired
     public JwtFilter(
-            @Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
+              UserDetailsService userDetailsService,
             JwtService jwtService
     ) {
         this.userDetailsService = userDetailsService;

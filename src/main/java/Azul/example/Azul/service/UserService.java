@@ -3,6 +3,11 @@ package Azul.example.Azul.service;
 import Azul.example.Azul.Mapper.UserMapper;
 import Azul.example.Azul.dto.AuthUserDTO;
 import Azul.example.Azul.dto.RegisterDTO;
+import Azul.example.Azul.exception.PasswordIncorrectException;
+import Azul.example.Azul.model.Admin;
+import Azul.example.Azul.model.Client;
+import Azul.example.Azul.model.Coach;
+import Azul.example.Azul.model.Role;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -17,9 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
-import Azul.example.Azul.model.Admin;
-import Azul.example.Azul.model.Client;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -45,22 +47,19 @@ public class UserService {
     }
 
     public Utilisateur registerUser(RegisterDTO registerDTO) {
-        Optional<Utilisateur> existingUser = userRepository.findUserByEmail(registerDTO.email());
-        if (existingUser.isPresent()) {
+        if (userRepository.findUserByEmail(registerDTO.email()) != null) {
             throw new IllegalArgumentException("User with this email already exists.");
         }
 
         Utilisateur newUser;
-        String role = registerDTO.role(); // Adjust if your DTO uses a different method/field
-
-        if ("ADMIN".equalsIgnoreCase(role)) {
-            newUser = new Admin(registerDTO.fullName(), registerDTO.email(), encoder.encode(registerDTO.password()));
-        } else if ("CLIENT".equalsIgnoreCase(role)) {
-            newUser = new Client(registerDTO.fullName(), registerDTO.email(), encoder.encode(registerDTO.password()));
-        } else {
-            throw new IllegalArgumentException("Unknown role: " + role);
+        String encryptedPassword = encoder.encode(registerDTO.password());
+        Role role = registerDTO.role();
+        switch (role) {
+            case ADMIN -> newUser = new Admin(registerDTO.fullName(), registerDTO.email(), encryptedPassword, Role.ADMIN);
+            case CLIENT -> newUser = new Client(registerDTO.fullName(), registerDTO.email(), encryptedPassword, Role.CLIENT);
+            case COACH -> newUser = new Coach(registerDTO.fullName(), registerDTO.email(), encryptedPassword, Role.COACH, "specialite par defaut");
+            default -> throw new IllegalArgumentException("Unknown role: " + role);
         }
-
         return userRepository.save(newUser);
     }
 
@@ -90,16 +89,15 @@ public class UserService {
     }
 
     public AuthUserDTO getAuthenticatedUser(String email) {
-        Optional<Utilisateur> authenticatedUser = userRepository.findUserByEmail(email);
-        if (authenticatedUser.isEmpty()) {
+        Utilisateur authenticatedUser = userRepository.findUserByEmail(email);
+        if (authenticatedUser == null) {
             throw new PasswordIncorrectException("User not found after authentication (this should not happen).");
         }
-        Utilisateur user = authenticatedUser.get();
         return new AuthUserDTO(
-                user.getId(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getRole()
+                authenticatedUser.getId(),
+                authenticatedUser.getFullName(),
+                authenticatedUser.getEmail(),
+                authenticatedUser.getRole()
         );
     }
 }

@@ -4,7 +4,6 @@ import Azul.example.Azul.dto.RegisterDTO;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.service.Authservice;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ public class RegisterController {
     }
 
     @PostMapping("/{role}")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterDTO registerDTO, @PathVariable String role) {
+    public ResponseEntity<Utilisateur> registerUser(@Valid @RequestBody RegisterDTO registerDTO,@PathVariable String role) {
         Utilisateur registeredUser = authService.registerUser(registerDTO, role);
         return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }

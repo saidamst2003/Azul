@@ -1,14 +1,16 @@
 package Azul.example.Azul.service;
 
+
+import Azul.example.Azul.model.UserPrincipal;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.UserRepository;
-import org.apache.catalina.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -26,13 +28,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             throws UsernameNotFoundException
     {
 
-        Optional<User> user = userRepository.findUserByEmail(email);
+        Utilisateur utilisateur = userRepository.findUserByEmail(email);
 
-        if ( user == null ) {
+        if ( utilisateur == null ) {
             System.out.println("user not found");
             throw new UsernameNotFoundException("this user is not found");
         }
 
-        return new Utilisateur(user);
+        return new UserPrincipal(Optional.of(utilisateur));
     }
 }
