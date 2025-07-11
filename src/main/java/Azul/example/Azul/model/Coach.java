@@ -1,9 +1,6 @@
 package Azul.example.Azul.model;
 
-import Azul.example.Azul.model.Atelier;
-import Azul.example.Azul.model.Utilisateur;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,29 +8,32 @@ import java.util.List;
 @Table(name = "coaches")
 @DiscriminatorValue("COACH")
 public class Coach extends Utilisateur {
-
     @Column(nullable = false)
     private String specialite;
 
     @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Atelier> ateliers = new ArrayList<>();
 
-    // Constructeurs
-    public Coach() {
-        super();
-    }
+    public Coach() {}
 
-    public Coach(String fullName, String email, String password, String specialite, Role role) {
-        super(fullName, email, password, role.COACH);
+    public Coach(String fullName, String email, String password, Role role, String specialite) {
+        super(null, fullName, email, password, role);
         this.specialite = specialite;
     }
 
-    // Getters et Setters
     public String getSpecialite() { return specialite; }
     public void setSpecialite(String specialite) { this.specialite = specialite; }
 
     public List<Atelier> getAteliers() { return ateliers; }
     public void setAteliers(List<Atelier> ateliers) { this.ateliers = ateliers; }
 
+    @Override
+    public void seConnecter() {
+        // Logique de connexion pour coach
+    }
 
+    // Méthodes spécifiques
+    public void ajouterCoach() {}
+    public void modifierCoach() {}
+    public void supprimerCoach() {}
 }
