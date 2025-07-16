@@ -69,14 +69,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - accessible without authentication
+                        .requestMatchers(HttpMethod.POST, "/user/register/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/roles").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        // Profile and reservations - accessible to ADMIN and CLIENT
-                        .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT")
-                        .requestMatchers("/api/reservations/**").hasAnyRole("ADMIN", "CLIENT")
 
                         // Any other request requires authentication
                         .anyRequest().authenticated()

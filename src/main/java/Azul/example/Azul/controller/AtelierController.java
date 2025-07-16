@@ -6,7 +6,7 @@ import Azul.example.Azul.model.Atelier;
 import Azul.example.Azul.model.Coach;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.repository.Coachrepo;
-import Azul.example.Azul.repository.UseRepo;
+import Azul.example.Azul.repository.UserRepository;
 import Azul.example.Azul.service.AtelierService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,10 @@ public class AtelierController {
 
     private final AtelierService atelierService;
     private final Coachrepo coachrepo;
-    private final UseRepo useRepo;
+    private final UserRepository useRepo;
 
     @Autowired
-    public AtelierController(AtelierService atelierService, Coachrepo coachrepo, UseRepo useRepo) {
+    public AtelierController(AtelierService atelierService, Coachrepo coachrepo, UserRepository useRepo) {
         this.atelierService = atelierService;
         this.coachrepo = coachrepo;
         this.useRepo = useRepo;

@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,23 +15,30 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    UserDetailsService userDetailsService;
-    JwtService jwtService;
+    private final UserDetailsService userDetailsService;
+    private final JwtService jwtService;
 
     @Autowired
-    public JwtFilter(
-              UserDetailsService userDetailsService,
-            JwtService jwtService
-    ) {
+    public JwtFilter(UserDetailsService userDetailsService, JwtService jwtService) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        // ✅ Ignorer certaines routes publiques
+        String path = request.getRequestURI();
+        if (path.equals("/user/login") || path.equals("/user/roles") || path.startsWith("/user/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
@@ -52,6 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
