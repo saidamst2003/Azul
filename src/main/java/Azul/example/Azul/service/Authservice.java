@@ -23,19 +23,12 @@ public class Authservice {
         Utilisateur newUser;
 
         if(role.equalsIgnoreCase("admin")) {
-            newUser = new Admin();
-            newUser.setRole(Role.ADMIN);
-        } else if (role.equalsIgnoreCase("conducteur")) {
-            newUser = new Client();
-            newUser.setRole(Role.CLIENT);
+            newUser = new Admin(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.ADMIN);
+        } else if (role.equalsIgnoreCase("client")) {
+            newUser = new Client(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.CLIENT);
         } else {
-            newUser = new Coach();
-            newUser.setRole(Role.COACH);
+            newUser = new Coach(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.COACH, "specialite par defaut");
         }
-
-        newUser.setFullName(registerDTO.fullName());
-        newUser.setEmail(registerDTO.email());
-        newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
 
         return userRepository.save(newUser);
     }

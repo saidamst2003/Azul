@@ -22,17 +22,12 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<?> loginUser (@Valid @RequestBody LoginDTO loginDTO) {
-        Utilisateur utilisateur = new Utilisateur() {
-            @Override
-            public void seConnecter() {
-
-            }
-        };
-
-        utilisateur.setEmail(loginDTO.email());
-        utilisateur.setPassword(loginDTO.password());
-
+        // Chercher l'utilisateur en base pour avoir le bon type (Client/Admin/Coach)
+        Utilisateur utilisateur = userService.findByEmail(loginDTO.email());
+        if (utilisateur == null) {
+            return ResponseEntity.badRequest().body("Email ou mot de passe incorrect");
+        }
+        utilisateur.setPassword(loginDTO.password()); // mot de passe en clair pour l'authentification
         return userService.verify(utilisateur);
-
     }
 }
