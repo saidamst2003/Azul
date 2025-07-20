@@ -31,7 +31,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return String.valueOf(utilisateur.get().getFullName());
+        return String.valueOf(utilisateur.get().getEmail());
     }
 
     @Override
