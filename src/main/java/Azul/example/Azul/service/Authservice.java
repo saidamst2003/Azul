@@ -22,34 +22,13 @@ public class Authservice {
     public Utilisateur registerUser(RegisterDTO registerDTO, String role) {
         Utilisateur newUser;
 
-        // Use the role from the DTO if available, otherwise use the path variable
-        Role userRole = registerDTO.role() != null ? registerDTO.role() : 
-                       role.equalsIgnoreCase("admin") ? Role.ADMIN :
-                       role.equalsIgnoreCase("client") ? Role.CLIENT :
-                       role.equalsIgnoreCase("coach") ? Role.COACH : Role.CLIENT;
-
-        switch (userRole) {
-            case ADMIN -> {
-                newUser = new Admin();
-                newUser.setRole(Role.ADMIN);
-            }
-            case CLIENT -> {
-                newUser = new Client();
-                newUser.setRole(Role.CLIENT);
-            }
-            case COACH -> {
-                newUser = new Coach();
-                newUser.setRole(Role.COACH);
-            }
-            default -> {
-                newUser = new Client();
-                newUser.setRole(Role.CLIENT);
-            }
+        if(role.equalsIgnoreCase("admin")) {
+            newUser = new Admin(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.ADMIN);
+        } else if (role.equalsIgnoreCase("client")) {
+            newUser = new Client(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.CLIENT);
+        } else {
+            newUser = new Coach(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.COACH, "specialite par defaut");
         }
-
-        newUser.setFullName(registerDTO.fullName());
-        newUser.setEmail(registerDTO.email());
-        newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
 
         return userRepository.save(newUser);
     }

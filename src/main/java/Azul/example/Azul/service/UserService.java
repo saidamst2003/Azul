@@ -65,6 +65,19 @@ public class UserService {
 
     public ResponseEntity<?> verify(Utilisateur user) {
         try {
+            Utilisateur userFromDb = userRepository.findUserByEmail(user.getEmail());
+            if (userFromDb == null) {
+                System.err.println("[AUTH] Utilisateur non trouvé pour l'email: " + user.getEmail());
+                throw new PasswordIncorrectException("Email ou mot de passe incorrect");
+            }
+            System.err.println("[AUTH] Email: " + user.getEmail());
+            System.err.println("[AUTH] Password reçu: " + user.getPassword());
+            System.err.println("[AUTH] Password en base (crypté): " + userFromDb.getPassword());
+            boolean passwordMatch = encoder.matches(user.getPassword(), userFromDb.getPassword());
+            System.err.println("[AUTH] BCrypt match: " + passwordMatch);
+            if (!passwordMatch) {
+                throw new PasswordIncorrectException("Email ou mot de passe incorrect");
+            }
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             user.getEmail(),
@@ -99,5 +112,9 @@ public class UserService {
                 authenticatedUser.getEmail(),
                 authenticatedUser.getRole()
         );
+    }
+
+    public Utilisateur findByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 }
