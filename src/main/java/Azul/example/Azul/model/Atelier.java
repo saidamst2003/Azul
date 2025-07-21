@@ -1,8 +1,8 @@
 package Azul.example.Azul.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -40,11 +40,11 @@ public class Atelier {
     private Admin admin;
 
     @OneToMany(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("atelier-reservations")
+    @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
     @OneToMany(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("atelier-photos")
+    @JsonIgnore
     private List<Photo> photos = new ArrayList<>();
 
     @OneToOne(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -74,6 +74,8 @@ public class Atelier {
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
 
+
+
     public LocalTime getHeure() { return heure; }
     public void setHeure(LocalTime heure) { this.heure = heure; }
 
@@ -92,5 +94,4 @@ public class Atelier {
     public MenuCafe getMenuCafe() { return menuCafe; }
     public void setMenuCafe(MenuCafe menuCafe) { this.menuCafe = menuCafe; }
 
-}
-
+} 

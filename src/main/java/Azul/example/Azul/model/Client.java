@@ -13,7 +13,6 @@ import java.util.List;
 @DiscriminatorValue("CLIENT")
 public class Client extends Utilisateur {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("client-reservations")
     private List<Reservation> reservations = new ArrayList<>();
 
     public Client() {}

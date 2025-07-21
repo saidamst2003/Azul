@@ -17,11 +17,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String roleName = String.valueOf(utilisateur.get().getRole());
-        if (!roleName.startsWith("ROLE_")) {
-            roleName = "ROLE_" + roleName;
-        }
-        return Collections.singletonList(new SimpleGrantedAuthority(roleName));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + utilisateur.get().getRole().name()));
     }
 
     @Override
@@ -52,5 +48,9 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Optional<Utilisateur> getUtilisateur() {
+        return this.utilisateur;
     }
 }

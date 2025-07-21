@@ -13,7 +13,6 @@ public class Coach extends Utilisateur {
     private String specialite;
 
     @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("coach-ateliers")
     private List<Atelier> ateliers = new ArrayList<>();
 
     public Coach() {}

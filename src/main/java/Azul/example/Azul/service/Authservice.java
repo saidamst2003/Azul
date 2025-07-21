@@ -22,6 +22,7 @@ public class Authservice {
     public Utilisateur registerUser(RegisterDTO registerDTO, String role) {
         Utilisateur newUser;
 
+
         if(role.equalsIgnoreCase("admin")) {
             newUser = new Admin(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.ADMIN);
         } else if (role.equalsIgnoreCase("client")) {

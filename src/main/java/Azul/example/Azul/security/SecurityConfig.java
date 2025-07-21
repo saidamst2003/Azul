@@ -27,11 +27,12 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final CustomUserDetailsService  custemUserService;
+
+    private final CustomUserDetailsService customUserService;
     private final JwtFilter jwtFilter;
 
-    public SecurityConfig(CustomUserDetailsService custemUserService, JwtFilter jwtFilter) {
-        this.custemUserService = custemUserService;
+    public SecurityConfig(CustomUserDetailsService customUserService, JwtFilter jwtFilter) {
+        this.customUserService = customUserService;
         this.jwtFilter = jwtFilter;
     }
 
@@ -43,7 +44,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(custemUserService).passwordEncoder(passwordEncoder);
+        authenticationManagerBuilder.userDetailsService(customUserService).passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
 
@@ -52,7 +53,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
@@ -68,20 +69,22 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - accessible without authentication
-                        .requestMatchers(HttpMethod.POST, "/user/register/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/register/{role}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        // Public endpoints
+                        .requestMatchers(HttpMethod.POST, "/user/register", "/user/register/{role}", "/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/roles").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Any other request requires authentication
+                        // Ateliers uniquement accessibles aux ADMIN
+                        .requestMatchers("/api/ateliers/**").hasRole("ADMIN")
+
+                        // Profile et Réservations accessibles aux ADMIN et CLIENT
+                        .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT")
+                        .requestMatchers("/api/reservations/**").hasAnyRole("ADMIN", "CLIENT")
+
+                        // Toutes les autres requêtes
                         .anyRequest().authenticated()
                 )
-                // Add JWT filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 }

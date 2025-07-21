@@ -31,10 +31,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Utilisateur utilisateur = userRepository.findUserByEmail(email);
 
         if ( utilisateur == null ) {
-            System.out.println("user not found");
             throw new UsernameNotFoundException("this user is not found");
         }
-
         return new UserPrincipal(Optional.of(utilisateur));
     }
 }
