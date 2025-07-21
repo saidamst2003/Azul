@@ -24,8 +24,7 @@ public class FileStorageService {
     }
 
     public String save(MultipartFile file) {
-        // Ensure uploads directory exists before saving
-        init();
+        init(); // Ensure uploads directory exists before saving
         try {
             String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
             String sanitizedFilename = originalFilename
