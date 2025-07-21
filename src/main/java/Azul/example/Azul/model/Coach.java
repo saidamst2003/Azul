@@ -1,5 +1,6 @@
 package Azul.example.Azul.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Coach extends Utilisateur {
     private String specialite;
 
     @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("coach-ateliers")
     private List<Atelier> ateliers = new ArrayList<>();
 
     public Coach() {}

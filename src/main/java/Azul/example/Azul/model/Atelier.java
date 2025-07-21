@@ -1,5 +1,8 @@
 package Azul.example.Azul.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -28,19 +31,24 @@ public class Atelier {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coach_id")
+    @JsonBackReference("coach-ateliers")
     private Coach coach;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
+    @JsonBackReference("admin-ateliers")
     private Admin admin;
 
     @OneToMany(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("atelier-reservations")
     private List<Reservation> reservations = new ArrayList<>();
 
     @OneToMany(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("atelier-photos")
     private List<Photo> photos = new ArrayList<>();
 
     @OneToOne(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("atelier-menucafe")
     private MenuCafe menuCafe;
 
     // Constructeurs
