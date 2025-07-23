@@ -21,12 +21,10 @@ import java.util.UUID;
 @Service
 public class AtelierService {
     private final AtelierRepository atelierRepository;
-    private final FileStorageService fileStorageService;
 
     @Autowired
-    public AtelierService(AtelierRepository atelierRepository, FileStorageService fileStorageService) {
+    public AtelierService(AtelierRepository atelierRepository) {
         this.atelierRepository = atelierRepository;
-        this.fileStorageService = fileStorageService;
     }
 
     public List<Atelier> getAllAteliers() {
@@ -48,10 +46,7 @@ public class AtelierService {
             throw new RuntimeException("Only admins can create ateliers");
         }
 
-        String filename = fileStorageService.save(file);
-        Photo photo = new Photo(filename);
-        photo.setAtelier(atelier);
-        atelier.getPhotos().add(photo);
+
 
         return atelierRepository.save(atelier);
     }
