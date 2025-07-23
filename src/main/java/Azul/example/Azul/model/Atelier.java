@@ -45,7 +45,7 @@ public class Atelier {
 
     @OneToMany(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Photo> photos = new ArrayList<>();
+    private List<image> photos = new ArrayList<>();
 
     @OneToOne(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference("atelier-menucafe")
@@ -88,8 +88,8 @@ public class Atelier {
     public List<Reservation> getReservations() { return reservations; }
     public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
 
-    public List<Photo> getPhotos() { return photos; }
-    public void setPhotos(List<Photo> photos) { this.photos = photos; }
+    public List<image> getPhotos() { return photos; }
+    public void setPhotos(List<image> photos) { this.photos = photos; }
 
     public MenuCafe getMenuCafe() { return menuCafe; }
     public void setMenuCafe(MenuCafe menuCafe) { this.menuCafe = menuCafe; }
