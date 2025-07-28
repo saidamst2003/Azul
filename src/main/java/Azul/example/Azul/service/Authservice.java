@@ -22,13 +22,31 @@ public class Authservice {
     public Utilisateur registerUser(RegisterDTO registerDTO, String role) {
         Utilisateur newUser;
 
-
-        if(role.equalsIgnoreCase("admin")) {
-            newUser = new Admin(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.ADMIN);
+        if (role.equalsIgnoreCase("admin")) {
+            newUser = new Admin(
+                    registerDTO.fullName(),
+                    registerDTO.email(),
+                    passwordEncoder.encode(registerDTO.password()),
+                    Role.ADMIN
+            );
         } else if (role.equalsIgnoreCase("client")) {
-            newUser = new Client(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.CLIENT);
+            newUser = new Client(
+                    registerDTO.fullName(),
+                    registerDTO.email(),
+                    passwordEncoder.encode(registerDTO.password()),
+                    Role.CLIENT
+            );
+        } else if (role.equalsIgnoreCase("coach")) {
+            // Ici pas de spécialité fournie → valeur fixe par défaut
+            newUser = new Coach(
+                    registerDTO.fullName(),
+                    registerDTO.email(),
+                    passwordEncoder.encode(registerDTO.password()),
+                    Role.COACH,
+                    "Aucune spécialité"
+            );
         } else {
-            newUser = new Coach(registerDTO.fullName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()), Role.COACH, "specialite par defaut");
+            throw new IllegalArgumentException("Rôle non reconnu : " + role);
         }
 
         return userRepository.save(newUser);

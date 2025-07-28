@@ -4,6 +4,7 @@ import Azul.example.Azul.dto.LoginDTO;
 import Azul.example.Azul.model.Utilisateur;
 import Azul.example.Azul.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +15,14 @@ public class LoginController {
 
     private final UserService userService;
 
-    public LoginController (
+    public LoginController(
             final UserService userService
     ) {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> loginUser (@Valid @RequestBody LoginDTO loginDTO) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
         // Chercher l'utilisateur en base pour avoir le bon type (Client/Admin/Coach)
         Utilisateur utilisateur = userService.findByEmail(loginDTO.email());
         if (utilisateur == null) {

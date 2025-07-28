@@ -6,26 +6,46 @@ import Azul.example.Azul.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ImageService {
 
     @Autowired
-    private CloudinaryService cloudinaryService;
-
-    @Autowired
     private ImageRepository imageRepository;
 
     public ResponseEntity<Map<String, String>> uploadImage(ImageDto imageModel) {
-        if (imageModel.getFile().isEmpty() || imageModel.getName().isEmpty()) {
+        MultipartFile file = imageModel.getFile();
+        if (file.isEmpty() || imageModel.getName().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        String url = cloudinaryService.uploadFile(imageModel.getFile(), "my-folder");
+        // Save file locally
+        String uploadsDir = System.getProperty("user.dir") + java.io.File.separator + "uploads" + java.io.File.separator;
+        String extension = "";
+        String originalName = file.getOriginalFilename();
+        if (originalName != null && originalName.contains(".")) {
+            extension = originalName.substring(originalName.lastIndexOf('.'));
+        }
+        String uniqueName = UUID.randomUUID() + extension;
+        Path filePath = Paths.get(uploadsDir + uniqueName);
+        try {
+            Files.createDirectories(filePath.getParent());
+            file.transferTo(filePath.toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
 
-        if (url == null) return ResponseEntity.badRequest().build();
+        String url = "/uploads/" + uniqueName;
 
         Image image = new Image();
         image.setName(imageModel.getName());

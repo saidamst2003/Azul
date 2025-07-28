@@ -1,7 +1,9 @@
 package Azul.example.Azul.controller;
 
+import Azul.example.Azul.dto.CreateAtelierDTO;
 import Azul.example.Azul.model.Atelier;
 import Azul.example.Azul.service.AtelierService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/ateliers")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class AtelierController {
+
     private final AtelierService atelierService;
 
     @Autowired
@@ -21,33 +24,47 @@ public class AtelierController {
         this.atelierService = atelierService;
     }
 
+    // ✅ Get all ateliers
     @GetMapping
-    public List<Atelier> getAllAteliers() {
-        return atelierService.getAllAteliers();
+    public ResponseEntity<List<Atelier>> getAllAteliers() {
+        List<Atelier> ateliers = atelierService.getAllAteliers();
+        return new ResponseEntity<>(ateliers, HttpStatus.OK);
     }
 
+    // ✅ Get atelier by id
     @GetMapping("/{id}")
     public ResponseEntity<Atelier> getAtelierById(@PathVariable Long id) {
         return atelierService.getAtelierById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(atelier -> new ResponseEntity<>(atelier, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping(consumes = { "multipart/form-data" })
-    public ResponseEntity<Atelier> createAtelier(@RequestPart("atelier") Atelier atelier, @RequestPart("file") MultipartFile file) {
-        Atelier created = atelierService.createAtelier(atelier, file);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+//create
+
+    @PostMapping("/create")
+
+    public ResponseEntity<Atelier> createAtelier(@Valid @RequestBody CreateAtelierDTO dto) {
+        Atelier atelier = atelierService.createAtelier(dto);
+        return ResponseEntity.ok(atelier);
     }
 
+
+    // ✅ Update
     @PutMapping("/{id}")
-    public ResponseEntity<Atelier> updateAtelier(@PathVariable Long id, @RequestBody Atelier atelier) {
-        Atelier updated = atelierService.updateAtelier(id, atelier);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Atelier> updateAtelier(@PathVariable Long id,
+                                                 @RequestBody Atelier atelierDetails) {
+        try {
+            Atelier updated = atelierService.updateAtelier(id, atelierDetails);
+            return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
+    // ✅ Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAtelier(@PathVariable Long id) {
         atelierService.deleteAtelier(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-} 
+}

@@ -5,29 +5,33 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class UserPrincipal implements UserDetails {
-    private final Optional<Utilisateur> utilisateur;
+    private final Utilisateur utilisateur;
 
-    public UserPrincipal(Optional<Utilisateur> user) {
-        this.utilisateur = user;
+    public UserPrincipal(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public Optional<Utilisateur> getUtilisateur() {
+        return Optional.ofNullable(utilisateur);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + utilisateur.get().getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + utilisateur.getRole().name()));
     }
 
     @Override
     public String getPassword() {
-        return  String.valueOf(utilisateur.get().getPassword());
+        return utilisateur.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return String.valueOf(utilisateur.get().getEmail());
+        return utilisateur.getEmail();
     }
 
     @Override
@@ -48,9 +52,5 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Optional<Utilisateur> getUtilisateur() {
-        return this.utilisateur;
     }
 }

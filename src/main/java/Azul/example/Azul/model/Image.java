@@ -1,5 +1,6 @@
 package Azul.example.Azul.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -15,6 +16,10 @@ public class Image {
 
     private String url;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "atelier_id")
+    @JsonBackReference("atelier-photos")
+    private Atelier atelier;
     public UUID getId() {
         return id;
     }
@@ -37,5 +42,13 @@ public class Image {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Atelier getAtelier() {
+        return atelier;
+    }
+
+    public void setAtelier(Atelier atelier) {
+        this.atelier = atelier;
     }
 }
