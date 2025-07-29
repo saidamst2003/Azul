@@ -102,6 +102,7 @@ public class AtelierService {
                 .orElseThrow(() -> new RuntimeException("Atelier not found"));
     }
 
+
     // ️ Delete
     public void deleteAtelier(Long id) {
         atelierRepository.deleteById(id);

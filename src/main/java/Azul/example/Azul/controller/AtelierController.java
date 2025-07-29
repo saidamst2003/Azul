@@ -23,13 +23,12 @@ public class AtelierController {
     public AtelierController(AtelierService atelierService) {
         this.atelierService = atelierService;
     }
-
-    // ✅ Get all ateliers
     @GetMapping
     public ResponseEntity<List<Atelier>> getAllAteliers() {
-        List<Atelier> ateliers = atelierService.getAllAteliers();
+        List<Atelier> ateliers = atelierService.getAllAteliers(); // now will load relations safely
         return new ResponseEntity<>(ateliers, HttpStatus.OK);
     }
+
 
     // ✅ Get atelier by id
     @GetMapping("/{id}")

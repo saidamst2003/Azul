@@ -75,7 +75,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // Ateliers accessibles aux ADMIN et CLIENT
-                        .requestMatchers("/api/ateliers/**").hasAnyRole("ADMIN", "CLIENT")
+                        .requestMatchers("/api/ateliers/**") .permitAll()
 
                         // Profile et Réservations accessibles aux ADMIN et CLIENT
                         .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT")
