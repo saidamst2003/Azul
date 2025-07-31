@@ -1,5 +1,6 @@
 package Azul.example.Azul.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +18,7 @@ public class MenuCafe {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atelier_id")
+    @JsonBackReference("atelier-menucafe")
     private Atelier atelier;
 
     // Constructeurs

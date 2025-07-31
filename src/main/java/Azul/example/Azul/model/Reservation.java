@@ -1,5 +1,6 @@
 package Azul.example.Azul.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -16,10 +17,12 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @JsonBackReference("client-reservations")
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atelier_id")
+    @JsonBackReference("atelier-reservations")
     private Atelier atelier;
 
     // Constructeurs

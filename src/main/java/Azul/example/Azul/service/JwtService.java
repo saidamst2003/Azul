@@ -1,14 +1,16 @@
 package Azul.example.Azul.service;
 
-import Azul.example.Azul.dto.AuthUserDTO;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import Azul.example.Azul.dto.AuthUserDTO;
+import Azul.example.Azul.model.UserPrincipal;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,16 +19,46 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${app.secret-key}")
-    private String secretKey;
+    private final String SECRET_KEY = "MySuperSecureJWTKeyWith32+Characters!!";
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateJwtToken(AuthUserDTO user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.id());
+        claims.put("firstName", user.fullName());
+        claims.put("email", user.email());
+        claims.put("role", user.role().name());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(user.email())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24h
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> {
+            Object id = claims.get("id");
+            if (id instanceof Integer) {
+                return ((Integer) id).longValue();
+            } else if (id instanceof Long) {
+                return (Long) id;
+            }
+            return null;
+        });
     }
 
     public Date extractExpiration(String token) {
@@ -46,32 +78,17 @@ public class JwtService {
                 .getBody();
     }
 
-    private boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateJwtToken(AuthUserDTO authUserDTO) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("id", authUserDTO.id());
-        claims.put("firstName", authUserDTO.fullName());
-        claims.put("email", authUserDTO.email());
-        claims.put("role", authUserDTO.role());
-
-        return createToken(claims, authUserDTO.email());
-    }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24h
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+    public Boolean validateToken(String token, UserPrincipal userPrincipal) {
+        final String username = extractUsername(token);
+        return (username.equals(userPrincipal.getUsername()) && !isTokenExpired(token));
     }
 }

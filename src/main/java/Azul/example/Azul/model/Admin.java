@@ -1,5 +1,6 @@
 package Azul.example.Azul.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import java.util.List;
 public class Admin extends Utilisateur {
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("admin-ateliers")
     private List<Atelier> ateliers = new ArrayList<>();
 
     // Constructeur vide
