@@ -1,7 +1,5 @@
 package Azul.example.Azul.controller;
 
-package Azul.example.Azul.controller;
-
 import Azul.example.Azul.model.Coach;
 import Azul.example.Azul.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;

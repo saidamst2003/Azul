@@ -4,10 +4,12 @@ import Azul.example.Azul.model.Coach;
 import Azul.example.Azul.repository.CoachRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CoachService {
 
     @Autowired

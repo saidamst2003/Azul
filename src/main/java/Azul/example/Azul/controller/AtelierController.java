@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,33 +24,31 @@ public class AtelierController {
     public AtelierController(AtelierService atelierService) {
         this.atelierService = atelierService;
     }
+
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
     public ResponseEntity<List<Atelier>> getAllAteliers() {
-        List<Atelier> ateliers = atelierService.getAllAteliers(); // now will load relations safely
+        List<Atelier> ateliers = atelierService.getAllAteliers();
         return new ResponseEntity<>(ateliers, HttpStatus.OK);
     }
 
-
-    // ✅ Get atelier by id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
     public ResponseEntity<Atelier> getAtelierById(@PathVariable Long id) {
         return atelierService.getAtelierById(id)
                 .map(atelier -> new ResponseEntity<>(atelier, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-//create
-
     @PostMapping("/create")
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
     public ResponseEntity<Atelier> createAtelier(@Valid @RequestBody CreateAtelierDTO dto) {
         Atelier atelier = atelierService.createAtelier(dto);
         return ResponseEntity.ok(atelier);
     }
 
-
-    // ✅ Update
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
     public ResponseEntity<Atelier> updateAtelier(@PathVariable Long id,
                                                  @RequestBody Atelier atelierDetails) {
         try {
@@ -60,8 +59,8 @@ public class AtelierController {
         }
     }
 
-    // ✅ Delete
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
     public ResponseEntity<Void> deleteAtelier(@PathVariable Long id) {
         atelierService.deleteAtelier(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

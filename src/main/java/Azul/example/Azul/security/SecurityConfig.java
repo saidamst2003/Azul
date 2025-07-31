@@ -61,7 +61,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -74,20 +73,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/user/roles").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Ateliers accessibles aux ADMIN et CLIENT
-                        .requestMatchers("/api/ateliers/**").authenticated()
+                        // Ateliers accessibles aux ADMIN, CLIENT et COACH
+                        .requestMatchers("/api/ateliers/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
 
-                        // Profile et Réservations accessibles aux ADMIN et CLIENT
-                        .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT","COACH")
-                        .requestMatchers("/api/reservations/**").hasAnyRole("ADMIN", "CLIENT" ,"COACH")
+                        // Profile et Réservations accessibles aux ADMIN, CLIENT et COACH
+                        .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
+                        .requestMatchers("/api/reservations/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
 
-                        // Coaches accessibles aux ADMIN et CLIENT
-                        .requestMatchers("/api/coaches/**").hasAnyRole("ADMIN", "CLIENT","COACH")
+                        // Coaches accessibles aux ADMIN, CLIENT et COACH
+                        .requestMatchers("/api/coaches/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
 
                         // Toutes les autres requêtes
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
-}
+    }}
