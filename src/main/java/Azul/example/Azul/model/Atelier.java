@@ -30,7 +30,7 @@ public class Atelier {
     private LocalTime heure;
 
     @Column(nullable = false)
-    private String categorie;  // الحقل الجديد ديال catégorie
+    private String categorie;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coach_id")

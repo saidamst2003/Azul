@@ -19,6 +19,7 @@ public interface AtelierRepository extends JpaRepository<Atelier, Long> {
     List<Atelier> findByDate(Date date);
 
     List<Atelier> findByCoachId(Long coachId);
+
     @EntityGraph(attributePaths = {"photos"})
     List<Atelier> findAll();
 
