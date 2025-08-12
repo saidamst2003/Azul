@@ -61,8 +61,11 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
+        // Récupérer la réservation avec les détails pour éviter les problèmes de lazy loading
+        Optional<Reservation> reservationWithDetails = reservationRepository.findByIdWithDetails(savedReservation.getId());
+
         // Convertir en DTO de réponse
-        return convertToResponseDTO(savedReservation);
+        return convertToResponseDTO(reservationWithDetails.get());
     }
 
     // Obtenir toutes les réservations d'un client
@@ -75,7 +78,7 @@ public class ReservationService {
             throw new Exception("Client non trouvé");
         }
 
-        List<Reservation> reservations = reservationRepository.findByClient(clientOpt.get());
+        List<Reservation> reservations = reservationRepository.findByClientWithDetails(clientOpt.get());
         return reservations.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
@@ -83,7 +86,7 @@ public class ReservationService {
 
     // Obtenir toutes les réservations d'un atelier
     public List<ReservationResponseDTO> getReservationsByAtelier(Long atelierId) {
-        List<Reservation> reservations = reservationRepository.findByAtelierId(atelierId);
+        List<Reservation> reservations = reservationRepository.findByAtelierIdWithDetails(atelierId);
         return reservations.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
@@ -101,7 +104,7 @@ public class ReservationService {
 
     // Obtenir une réservation par ID
     public ReservationResponseDTO getReservationById(Long reservationId) throws Exception {
-        Optional<Reservation> reservationOpt = reservationRepository.findById(reservationId);
+        Optional<Reservation> reservationOpt = reservationRepository.findByIdWithDetails(reservationId);
         if (reservationOpt.isEmpty()) {
             throw new Exception("Réservation non trouvée");
         }
