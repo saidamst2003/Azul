@@ -80,8 +80,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/profile/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
                         .requestMatchers("/api/reservations/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
 
-                        // Coaches accessibles aux ADMIN, CLIENT et COACH
-                        .requestMatchers("/api/coaches/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
+                        // Coaches: GET pour ADMIN, CLIENT, COACH; modifications réservées à ADMIN
+                        .requestMatchers(HttpMethod.GET, "/api/coaches/**").hasAnyRole("ADMIN", "CLIENT", "COACH")
+                        .requestMatchers(HttpMethod.POST, "/api/coaches/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/coaches/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/coaches/**").hasRole("ADMIN")
 
                         // Toutes les autres requêtes
                         .anyRequest().authenticated()
