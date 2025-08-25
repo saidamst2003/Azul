@@ -42,10 +42,13 @@ public class AtelierService {
 
         return switch (categorie.toUpperCase()) {
             case "ART" -> "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=600&q=80";
-            case "CUISINE" -> "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80";
-            case "BIEN_ETRE" -> "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80";
-            case "ENFANTS" -> "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80";
-            case "DIY" -> "https://images.unsplash.com/photo-1615713170963-2595d2c721bb?auto=format&fit=crop&w=600&q=80";
+            case "ECRITURE" -> "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80";
+            case "JARDINAGE" -> "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80";
+            case "BIJOUX" -> "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=600&q=80";
+            case "MAKEUP" -> "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80";
+            case "YOGA" -> "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80";
+            case "FITNESS" -> "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=80";
+            case "NATATION" -> "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=600&q=80";
             default -> null;
         };
     }

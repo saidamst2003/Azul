@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "utilisateurs")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "type_utilisateur")
 public abstract class Utilisateur {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(name = "full_name", nullable = false)
