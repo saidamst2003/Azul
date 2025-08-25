@@ -3,8 +3,8 @@ package Azul.example.Azul.service;
 import Azul.example.Azul.dto.CreateCoachDTO;
 import Azul.example.Azul.dto.UpdateCoachDTO;
 import Azul.example.Azul.model.Coach;
-import Azul.example.Azul.repository.CoachRepository;
 import Azul.example.Azul.model.Role;
+import Azul.example.Azul.repository.Coachrepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class CoachService {
 
     @Autowired
-    private CoachRepository coachRepository;
+    private Coachrepo coachRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 

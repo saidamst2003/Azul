@@ -1,7 +1,7 @@
 package Azul.example.Azul.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +10,19 @@ import java.util.List;
 @Table(name = "coaches")
 @DiscriminatorValue("COACH")
 public class Coach extends Utilisateur {
+
     @Column(nullable = false)
     private String specialite;
 
     @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore // Pour éviter les références circulaires
+    @JsonIgnore
     private List<Atelier> ateliers = new ArrayList<>();
 
     public Coach() {}
 
     @Override
     public void seConnecter() {
-
+        // logique de connexion spécifique au coach
     }
 
     public Coach(String fullName, String email, String password, Role role, String specialite) {
@@ -29,13 +30,33 @@ public class Coach extends Utilisateur {
         this.specialite = specialite;
     }
 
-    public String getSpecialite() { return specialite; }
-    public void setSpecialite(String specialite) { this.specialite = specialite; }
+    public String getSpecialite() {
+        return specialite;
+    }
 
-    public List<Atelier> getAteliers() { return ateliers; }
-    public void setAteliers(List<Atelier> ateliers) { this.ateliers = ateliers; }
+    public void setSpecialite(String specialite) {
+        this.specialite = specialite;
+    }
+
+    public List<Atelier> getAteliers() {
+        return ateliers;
+    }
+
+    public void setAteliers(List<Atelier> ateliers) {
+        this.ateliers = ateliers;
+    }
+
+    // Override باش مانخليوش password يتعرض فالـ JSON
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return super.getPassword();
+    }
 
 
-
-
+    @Override
+    @JsonProperty
+    public void setPassword(String password) {
+        super.setPassword(password);
+    }
 }
