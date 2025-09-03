@@ -32,6 +32,13 @@ public class AtelierController {
         return new ResponseEntity<>(ateliers, HttpStatus.OK);
     }
 
+    @GetMapping("/coach/{coachId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
+    public ResponseEntity<List<Atelier>> getAteliersByCoach(@PathVariable Long coachId) {
+        List<Atelier> ateliers = atelierService.getAteliersByCoachId(coachId);
+        return new ResponseEntity<>(ateliers, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'COACH')")
     public ResponseEntity<Atelier> getAtelierById(@PathVariable Long id) {

@@ -13,11 +13,11 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     // Trouver toutes les réservations d'un client avec fetch join
-    @Query("SELECT r FROM Reservation r JOIN FETCH r.client JOIN FETCH r.atelier WHERE r.client = :client")
+    @Query("SELECT r FROM Reservation r JOIN FETCH r.client JOIN FETCH r.atelier LEFT JOIN FETCH r.atelier.coach WHERE r.client = :client")
     List<Reservation> findByClientWithDetails(@Param("client") Client client);
 
     // Trouver toutes les réservations d'un atelier avec fetch join
-    @Query("SELECT r FROM Reservation r JOIN FETCH r.client JOIN FETCH r.atelier WHERE r.atelier.id = :atelierId")
+    @Query("SELECT r FROM Reservation r JOIN FETCH r.client JOIN FETCH r.atelier LEFT JOIN FETCH r.atelier.coach WHERE r.atelier.id = :atelierId")
     List<Reservation> findByAtelierIdWithDetails(@Param("atelierId") Long atelierId);
 
     // Trouver toutes les réservations d'un client (méthode simple)
@@ -30,6 +30,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     boolean existsByClientAndAtelierIdAndDateReservation(Client client, Long atelierId, java.sql.Date dateReservation);
 
     // Trouver une réservation par ID avec fetch join
-    @Query("SELECT r FROM Reservation r JOIN FETCH r.client JOIN FETCH r.atelier WHERE r.id = :id")
+    @Query("SELECT r FROM Reservation r JOIN FETCH r.client JOIN FETCH r.atelier LEFT JOIN FETCH r.atelier.coach WHERE r.id = :id")
     java.util.Optional<Reservation> findByIdWithDetails(@Param("id") Long id);
 }

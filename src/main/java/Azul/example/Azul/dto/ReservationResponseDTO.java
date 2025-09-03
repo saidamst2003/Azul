@@ -11,11 +11,15 @@ public class ReservationResponseDTO {
     private Long atelierId;
     private String atelierNom;
     private String atelierDescription;
+    private Long coachId;
+    private String coachNom;
+    private String coachSpecialite;
 
     public ReservationResponseDTO() {}
 
     public ReservationResponseDTO(Long id, Date dateReservation, Long clientId, String clientNom,
-                                  String clientEmail, Long atelierId, String atelierNom, String atelierDescription) {
+                                  String clientEmail, Long atelierId, String atelierNom, String atelierDescription,
+                                  Long coachId, String coachNom, String coachSpecialite) {
         this.id = id;
         this.dateReservation = dateReservation;
         this.clientId = clientId;
@@ -24,6 +28,9 @@ public class ReservationResponseDTO {
         this.atelierId = atelierId;
         this.atelierNom = atelierNom;
         this.atelierDescription = atelierDescription;
+        this.coachId = coachId;
+        this.coachNom = coachNom;
+        this.coachSpecialite = coachSpecialite;
     }
 
     // Getters et Setters
@@ -89,5 +96,29 @@ public class ReservationResponseDTO {
 
     public void setAtelierDescription(String atelierDescription) {
         this.atelierDescription = atelierDescription;
+    }
+
+    public Long getCoachId() {
+        return coachId;
+    }
+
+    public void setCoachId(Long coachId) {
+        this.coachId = coachId;
+    }
+
+    public String getCoachNom() {
+        return coachNom;
+    }
+
+    public void setCoachNom(String coachNom) {
+        this.coachNom = coachNom;
+    }
+
+    public String getCoachSpecialite() {
+        return coachSpecialite;
+    }
+
+    public void setCoachSpecialite(String coachSpecialite) {
+        this.coachSpecialite = coachSpecialite;
     }
 }
