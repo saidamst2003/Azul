@@ -138,4 +138,42 @@ class AtelierServiceTest {
 
 
 
+    @Test
+    void testGetAll() {
+        // Arrange
+        when(atelierRepository.findAll()).thenReturn(Arrays.asList(atelier));
+
+        // Act
+        List<Atelier> result = atelierService.getAllAteliers();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(atelier.getNom(), result.get(0).getNom());
+    }
+
+    @Test
+    void testGetById() {
+        // Arrange
+        when(atelierRepository.findById(1L)).thenReturn(Optional.of(atelier));
+
+        // Act
+        Optional<Atelier> result = atelierService.getAtelierById(1L);
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(atelier.getNom(), result.get().getNom());
+    }
+
+    @Test
+    void testGetById_NotFound() {
+        // Arrange
+        when(atelierRepository.findById(999L)).thenReturn(Optional.empty());
+        // Act
+        Optional<Atelier> result = atelierService.getAtelierById(999L);
+        // Assert
+        assertTrue(result.isEmpty());
+    }
+
+
 }
