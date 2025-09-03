@@ -83,4 +83,59 @@ class AtelierServiceTest {
 
     }
 
+
+
+
+    @Test
+    void testCreate_NonAdmin() {
+        // Arrange
+        Coach regularUser = new Coach();
+        regularUser.setEmail("user@example.com");
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getName()).thenReturn("user@example.com");
+        when(userRepository.findUserByEmail("user@example.com")).thenReturn(regularUser);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> atelierService.createAtelier(createAtelierDTO));
+    }
+
+    @Test
+    void testUpdate() {
+        // Arrange
+        Atelier updatedAtelier = new Atelier();
+        updatedAtelier.setNom("Updated Name");
+        updatedAtelier.setDescription("Updated Description");
+        updatedAtelier.setDate(Date.valueOf(LocalDate.now().plusDays(1)));
+        updatedAtelier.setHeure(LocalTime.of(16, 0));
+        updatedAtelier.setCoach(coach);
+
+        when(atelierRepository.findById(1L)).thenReturn(Optional.of(atelier));
+        when(atelierRepository.save(any(Atelier.class))).thenReturn(updatedAtelier);
+
+        // Act
+        Atelier result = atelierService.updateAtelier(1L, updatedAtelier);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Updated Name", result.getNom());
+        assertEquals("Updated Description", result.getDescription());
+    }
+
+
+    @Test
+    void testDelete() {
+        // Arrange
+        doNothing().when(atelierRepository).deleteById(1L);
+
+        // Act
+        atelierService.deleteAtelier(1L);
+
+        // Assert
+        verify(atelierRepository, times(1)).deleteById(1L);
+    }
+
+
+
+
 }
