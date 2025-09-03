@@ -18,11 +18,18 @@ public interface AtelierRepository extends JpaRepository<Atelier, Long> {
 
     List<Atelier> findByDate(Date date);
 
-    List<Atelier> findByCoachId(Long coachId);
-
     @EntityGraph(attributePaths = {"photos"})
     List<Atelier> findAll();
 
+    @Query("SELECT a FROM Atelier a LEFT JOIN FETCH a.photos LEFT JOIN FETCH a.coach")
+    List<Atelier> findAllWithCoachDetails();
+
+    @Query("SELECT a FROM Atelier a LEFT JOIN FETCH a.coach")
+    List<Atelier> findAllWithCoachOnly();
+
     @Query("SELECT a FROM Atelier a WHERE a.date >= :dateDebut AND a.date <= :dateFin")
     List<Atelier> findByDateBetween(@Param("dateDebut") Date dateDebut, @Param("dateFin") Date dateFin);
+
+    @Query("SELECT a FROM Atelier a LEFT JOIN FETCH a.photos WHERE a.coach.id = :coachId")
+    List<Atelier> findByCoachId(@Param("coachId") Long coachId);
 }

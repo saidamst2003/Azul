@@ -47,9 +47,9 @@ public class ReservationService {
         Client client = clientOpt.get();
         Atelier atelier = atelierOpt.get();
 
-        // Vérifier si une réservation existe déjà pour ce client et cet atelier à cette date
+        // Vérifier si une réservation existe déjà pour ce client et cet atelier à la date de l'atelier
         if (reservationRepository.existsByClientAndAtelierIdAndDateReservation(
-                client, dto.getAtelierId(), dto.getDateReservation())) {
+                client, dto.getAtelierId(), atelier.getDate())) {
             throw new Exception("Une réservation existe déjà pour cet atelier à cette date");
         }
 
@@ -57,7 +57,8 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         reservation.setClient(client);
         reservation.setAtelier(atelier);
-        reservation.setDateReservation(dto.getDateReservation());
+        // Forcer la date de réservation à être la date de l'atelier
+        reservation.setDateReservation(atelier.getDate());
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
@@ -122,7 +123,10 @@ public class ReservationService {
                 reservation.getClient().getEmail(),
                 reservation.getAtelier().getId(),
                 reservation.getAtelier().getNom(),
-                reservation.getAtelier().getDescription()
+                reservation.getAtelier().getDescription(),
+                reservation.getAtelier().getCoach() != null ? reservation.getAtelier().getCoach().getId() : null,
+                reservation.getAtelier().getCoach() != null ? reservation.getAtelier().getCoach().getFullName() : null,
+                reservation.getAtelier().getCoach() != null ? reservation.getAtelier().getCoach().getSpecialite() : null
         );
     }
 }

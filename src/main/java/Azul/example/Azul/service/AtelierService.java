@@ -32,9 +32,21 @@ public class AtelierService {
         return atelierRepository.findAll();
     }
 
+    public List<Atelier> getAllAteliersWithCoachDetails() {
+        return atelierRepository.findAllWithCoachDetails();
+    }
+
+    public List<Atelier> getAllAteliersWithCoachDetailsOnly() {
+        return atelierRepository.findAllWithCoachOnly();
+    }
+
     public Optional<Atelier> getAtelierById(Long id) {
         return atelierRepository.findById(id);
     }
+
+	public List<Atelier> getAteliersByCoachId(Long coachId) {
+		return atelierRepository.findByCoachId(coachId);
+	}
 
     //  Image par catégorie
     private String getImageUrlByCategorie(String categorie) {
