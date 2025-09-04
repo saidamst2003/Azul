@@ -1,0 +1,32 @@
+
+services:
+  azul-db:
+    image: mysql:8.1
+    container_name: azul-db
+    environment:
+      MYSQL_DATABASE: azul_db
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+
+
+    ports:
+      - "3307:3306"
+    volumes:
+      - azul-db-data:/var/lib/mysql
+
+  azul-app:
+    build: .
+    container_name: azul-app
+    ports:
+      - "8087:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://azul-db:3306/azul_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      APP_SECRET_KEY: skjdf9283r32!4ljkasd09sdkf023kjljlKJHKSJDFkdf
+      APP_EXPIRATION_TIME: 86400000
+    depends_on:
+      - azul-db
+
+volumes:
+  azul-db-data:
