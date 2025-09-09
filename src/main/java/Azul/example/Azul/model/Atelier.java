@@ -46,13 +46,9 @@ public class Atelier {
     @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("atelier-photos")
-    private List<Image> photos = new ArrayList<>();
 
-    @OneToOne(mappedBy = "atelier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("atelier-menucafe")
-    private MenuCafe menuCafe;
+
+
 
     // CONSTRUCTEURS
     public Atelier() {}
@@ -93,11 +89,5 @@ public class Atelier {
     public List<Reservation> getReservations() { return reservations; }
     public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
 
-    public List<Image> getPhotos() { return photos; }
-    public void setPhotos(List<Image> photos) {
-        this.photos = photos;
-    }
 
-    public MenuCafe getMenuCafe() { return menuCafe; }
-    public void setMenuCafe(MenuCafe menuCafe) { this.menuCafe = menuCafe; }
 }

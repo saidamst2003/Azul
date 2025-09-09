@@ -1,5 +1,4 @@
 
-# Stage 2: Run the application
 FROM openjdk:17-jdk-slim
 ADD target/*.jar backend-0.0.1-SNAPSHOT.jar
 EXPOSE 8081
