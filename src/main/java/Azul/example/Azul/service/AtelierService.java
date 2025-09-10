@@ -88,16 +88,6 @@ public class AtelierService {
                 .orElseThrow(() -> new RuntimeException("Coach non trouvé"));
         atelier.setCoach(coach);
 
-        // Image par catégorie
-        String imageUrl = getImageUrlByCategorie(dto.getCategorie());
-        if (imageUrl != null) {
-            Image image = new Image();
-            image.setUrl(imageUrl);
-            image.setAtelier(atelier);
-            List<Image> images = new ArrayList<>();
-            images.add(image);
-            atelier.setPhotos(images);
-        }
 
         return atelierRepository.save(atelier);
     }
